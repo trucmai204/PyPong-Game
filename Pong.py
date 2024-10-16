@@ -1,8 +1,9 @@
-from turtle import Screen
+import pygame
 from classes.paddle import Paddle
 from classes.ball import Ball
 from classes.score import Score_Of_Player
 from utils.key_handler import key_down, key_up, keys_pressed
+from classes.timer import Timer 
 import time
 
 # Thiết lập màn hình
@@ -17,6 +18,9 @@ paddle_right = Paddle((350, 0))
 paddle_left = Paddle((-350, 0))
 ball = Ball()
 score = Score_Of_Player()
+timer = Timer()
+'''Bắt đầu đếm ngược'''
+timer.countdown()
 
 # Lắng nghe sự kiện bàn phím
 display.listen()
@@ -34,6 +38,8 @@ display.onkeyrelease(lambda: key_up("s"), "s")
 start_game = True
 while start_game:
     time.sleep(ball.ball_speed)
+    if timer.seconds == 0:
+        start_game = False 
 
     # Kiểm tra trạng thái các phím và di chuyển thanh trượt
     if keys_pressed["Up"]:
