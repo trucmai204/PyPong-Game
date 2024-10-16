@@ -1,26 +1,21 @@
-from turtle import Turtle
+import pygame
 
-class Score_Of_Player(Turtle):
-    def __init__(self):
-        super().__init__()
-        self.color("white")
-        self.penup()
-        self.hideturtle()
-        self.l_score = 0
-        self.r_score = 0
-        self.update_score()
+class Score:
+    def __init__(self, screen_width):
+        self.left_score = 0
+        self.right_score = 0
+        self.font = pygame.font.Font(None, 74)
+        self.screen_width = screen_width
 
-    def update_score(self):
-        self.clear()
-        self.goto(-100, 200)
-        self.write(self.l_score, align="center", font=("Courier", 50, "normal"))
-        self.goto(100, 200)
-        self.write(self.r_score, align="center", font=("Courier", 50, "normal"))
+    def update(self, screen):
+        left_text = self.font.render(str(self.left_score), True, (255, 255, 255))
+        right_text = self.font.render(str(self.right_score), True, (255, 255, 255))
 
-    def left_score(self):
-        self.l_score += 1
-        self.update_score()
+        screen.blit(left_text, (self.screen_width // 4, 10))
+        screen.blit(right_text, (self.screen_width * 3 // 4, 10))
 
-    def right_score(self):
-        self.r_score += 1
-        self.update_score()
+    def left_point(self):
+        self.left_score += 1
+
+    def right_point(self):
+        self.right_score += 1
