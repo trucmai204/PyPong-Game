@@ -206,4 +206,4 @@ if __name__ == "__main__":
         # Bắt đầu trò chơi và kiểm tra xem có chọn "Exit" không
         result = game.start()
         if result == "exit":
-            continue
+            break
