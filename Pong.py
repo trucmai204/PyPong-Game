@@ -99,11 +99,14 @@ class Game:
         self.ai_mode = ai_mode
         self.score = Score(self.screen_width, mode='single' if ai_mode else 'multi')
         self.paused = False  # Thêm biến paused để thêm trạng thái tạm dừng
-
+        self.countdown = 60
+        self.high_scores = 0  # Điểm cao nhất
+        self.font = pygame.font.Font(None, 50)  # Font để hiển thị thời gian và điểm
+        
     def start(self):
         running = True
         pause_menu = PauseMenu(self.screen_width, self.screen_height)
-
+        start_ticks = pygame.time.get_ticks() #Lấy thời điểm bắt đầu trò chơi
         while running:
             for event in pygame.event.get():
                 if event.type == pygame.QUIT:
@@ -161,6 +164,14 @@ class Game:
                 elif self.ball.x + self.ball.radius > self.screen_width:  # Bóng ra ngoài bên phải
                     self.ball.reset(self.screen_width, self.screen_height)
                     self.score.left_point()  # Ghi điểm cho người chơi
+            if not self.paused:
+                seconds = (pygame.time.get_ticks() - start_ticks) / 1000
+                self.countdown = max(0, 60 - int(seconds))
+                
+                if self.countdown <= 0:
+                    self.high_scores = max(self.high_scores, self.score.load_high_scores())
+                    self.game_over()
+                    return
 
             # Vẽ trò chơi hoặc menu tạm dừng
             self.screen.fill((255, 192, 203))  # Màu nền trò chơi
@@ -169,11 +180,16 @@ class Game:
             self.ball.draw(self.screen)
             self.score.update(self.screen)
 
+            time_text = self.font.render(f"Time: {self.countdown}", True, (255, 255, 255))
+            self.screen.blit(time_text, (10, 10))  # Vẽ ở góc trên bên trái
+        
             if self.paused:
                 pause_menu.draw(self.screen)  # Vẽ menu tạm dừng
 
             pygame.display.flip()
             self.clock.tick(60)
+                
+
 
     def ai_move(self):
         # Kiểm tra xem bóng có gần paddle phải hay không
@@ -186,6 +202,27 @@ class Game:
             # Nếu vị trí dự đoán nhỏ hơn paddle, di chuyển lên
             elif future_y < self.paddle_right.y + self.paddle_right.height // 2:
                 self.paddle_right.move_up()
+    
+    def game_over(self):
+        """Hiển thị màn hình Game Over."""
+        running = True
+
+        # Kiểm tra và lưu điểm cao
+        if self.score.load_high_scores() < self.high_scores:
+            self.score.save_high_scores(self.high_scores)
+
+        while running:
+            self.screen.fill((0, 0, 0))  # Màu nền đen
+            # Các đoạn mã hiển thị "Game Over" và điểm cao như bạn đã viết
+
+            pygame.display.flip()
+
+            # Chờ người chơi nhấn phím bất kỳ để thoát khỏi màn hình Game Over
+            for event in pygame.event.get():
+                if event.type == pygame.QUIT:
+                    running = False
+                elif event.type == pygame.KEYDOWN:
+                    running = False  # Thoát khỏi cảnh Game Over
 
 
 # Chạy trò chơi với giao diện chọn chế độ
