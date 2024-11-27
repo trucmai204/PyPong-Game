@@ -71,16 +71,16 @@ class Score:
                 self.high_scores['single'] = self.left_score
             elif self.right_score > current_high:
                 self.high_scores['single'] = self.right_score
-            # Lưu điểm cao nếu có sự thay đổi
-            if self.high_scores['single'] > current_high:
-                self.save_high_scores()
-        else:  # mode == 'multi'
-            if self.left_score > self.high_scores['multi']:
-                self.high_scores['multi'] = self.left_score
-                self.save_high_scores()
-            if self.right_score > self.high_scores['multi']:
-                self.high_scores['multi'] = self.right_score
-                self.save_high_scores()
+                # Lưu điểm cao nếu có sự thay đổi
+                if self.high_scores['single'] > current_high:
+                    self.save_high_scores()
+            else:  # mode == 'multi'
+                if self.left_score > self.high_scores['multi']:
+                    self.high_scores['multi'] = self.left_score
+                    self.save_high_scores()
+                if self.right_score > self.high_scores['multi']:
+                    self.high_scores['multi'] = self.right_score
+                    self.save_high_scores()
 
     def check_winner(self, max_score):
         """Kiểm tra người thắng cuộc."""
