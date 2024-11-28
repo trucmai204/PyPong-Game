@@ -238,6 +238,9 @@ class Game:
             if self.paused:
                 pause_menu.draw(self.screen)  # Vẽ menu tạm dừng
 
+            if self.game_over_displayed:
+                running = False  # Thoát vòng lặp trò chơi
+
             pygame.display.flip()
             self.clock.tick(60)
 
@@ -265,18 +268,20 @@ class Game:
         pygame.time.wait(3000)
 
     def game_over(self):
-        """Hiển thị màn hình Game Over."""
         self.screen.fill((0, 0, 0))  # Màu nền đen
         font = pygame.font.Font(None, 74)
-        game_over_text = font.render("Game Over", True, (255, 0, 0))  # Màu đỏ
-        self.screen.blit(game_over_text, (
-            self.screen_width // 2 - game_over_text.get_width() // 2,
-            self.screen_height // 2 - game_over_text.get_height() // 2
+        text = font.render("Game Over", True, (255, 0, 0))  # Màu chữ đỏ
+        self.screen.blit(text, (
+            self.screen_width // 2 - text.get_width() // 2,
+            self.screen_height // 2 - text.get_height() // 2
         ))
         pygame.display.flip()
-        pygame.time.wait(3000)  # Chờ 3 giây trước khi thoát
-        pygame.quit()
-        exit()
+        pygame.time.wait(3000)  # Chờ 3 giây
+
+        # Quay lại menu chính
+        self.game_over_displayed = True
+        main_menu(self.screen)  # Gọi lại menu chính
+
 
 if __name__ == "__main__":
     pygame.init()
